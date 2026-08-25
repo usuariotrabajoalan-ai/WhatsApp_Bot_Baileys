@@ -15,6 +15,22 @@ app.get('/api/whatsapp/status', (req, res) => {
   res.json(statusInfo);
 });
 
+// Visual QR Route
+app.get('/qr', (req, res) => {
+  const statusInfo = getStatus();
+  if (statusInfo.status === 'waiting_for_qr') {
+    res.send(`<div style="font-family: sans-serif; text-align: center; margin-top: 50px;">
+      <h2>Escanea este código con tu WhatsApp:</h2>
+      <img src="${statusInfo.qr}" style="width:300px;height:300px; border: 1px solid #ccc; border-radius: 10px; padding: 10px;"/>
+      <p>Refresca la página si el código no funciona.</p>
+    </div>`);
+  } else if (statusInfo.status === 'connected') {
+    res.send(`<h2 style="font-family: sans-serif; text-align: center; margin-top: 50px; color: green;">✅ ¡El bot ya está conectado y listo!</h2>`);
+  } else {
+    res.send(`<h2 style="font-family: sans-serif; text-align: center; margin-top: 50px;">⏳ El bot se está iniciando... Recarga esta página en 5 segundos.</h2>`);
+  }
+});
+
 app.post('/api/whatsapp/start', (req, res) => {
   startWhatsApp();
   res.json({ message: 'WhatsApp bot startup initiated.' });
